@@ -2,6 +2,10 @@
 #include <iostream>
 #include <vector>
 using namespace std;
+
+class Matrix;
+ostream& operator<<(ostream& os, const Matrix& a); 
+
 class Matrix {
 	using num = double;
 public:
@@ -42,8 +46,19 @@ public:
 		m = a.m;
 		v = a.v;
 	}
+	num& operator()(int i, int j) {
+		if (i >= this->n || j >= this->m) {
+			cout << "Seg Fault\n";
+			throw;
+		}
+		return this->v[i][j];
+	}
 
-	int operator()(int i, int j) {
+	const num& operator()(int i, int j) const {
+		if (i >= this->n || j >= this->m) {
+			cout << "Seg Fault\n";
+			throw;
+		}
 		return this->v[i][j];
 	}
 	//Multiply by number
@@ -53,6 +68,7 @@ public:
 			for (auto &j : i) j *= x;
 		return m;
 	}
+
 	Matrix& operator*=(double x) {
 		Matrix m = this->v;
 		for (auto& i : this->v)
@@ -84,23 +100,16 @@ public:
 		}
 		return res;
 	}
-	/*
-	num& operator[](const int i, const int j) {
-		return this->v[i];
-	}*/
 	Matrix transpose() {
 		Matrix& a = *this;
-		cout << a;
 		Matrix b(a.m, a.n);
-		//cout << a.m << " " << a.n << '\n';
 		for (int i = 0; i < a.m; i++)
 			for (int j = 0; j < a.n; j++)
 				b.v[i][j] = a.v[j][i];
 		return b;
 	}
 };
-
-ostream& operator<<(ostream& os, const Matrix& a) {
+ostream& operator<<(ostream& os, const Matrix& a){
 	for (auto i : a.v) {
 		for (auto j : i)
 			os << j << " ";
@@ -108,14 +117,13 @@ ostream& operator<<(ostream& os, const Matrix& a) {
 	}
 	return os;
 }
-/*
+
 Matrix GaussSlau(const Matrix& A, const Matrix& b) {
-	size_t n = b.m;
+	size_t n = b.n;
 	cout << n << '\n';
 	Matrix W(n, n + 1);
-	for (size_t i = 0; i < n; i++) {
-		cout << i << '\n';
-		copy((A.v[i]).begin(), (A.v[i]).end(), W.v[i]);
+	for (int i = 0; i < n; i++) {
+		copy((A.v[i]).begin(), (A.v[i]).end(), (W.v[i]).begin());
 		W.v[i][n] = b.v[i][0];
 	}
 	for (size_t j = 0; j < n; j++) {
@@ -126,9 +134,9 @@ Matrix GaussSlau(const Matrix& A, const Matrix& b) {
 		std::swap(W.v[maxx], W.v[j]);
 		for (int dd = 0; dd < W.m; dd++)
 			W.v[j][dd] /= W.v[j][j];
-
+		cout << W << " <------\n";
 		for (size_t i = j + 1; i < n; i++)
-			for (size_t dd = 0; dd < n; dd++)
+			for (size_t dd = 0; dd < W.m; dd++)
 				W.v[i][dd] -= (W.v[j][dd] * W.v[i][j]);
 	}
 	// inverse
@@ -137,7 +145,7 @@ Matrix GaussSlau(const Matrix& A, const Matrix& b) {
 		for (int dd = 0; dd < n; dd++)
 			W.v[j][dd] /= W.v[j][j];
 
-		for (size_t i = j - 1; i < n; i--)
+		for (size_t i = j - 1; i < n; i++)
 			for (int dd = 0; dd < n; dd++)
 				W.v[i][dd] = W.v[i][dd] - (W.v[j][dd] * W.v[i][j]);
 	}
@@ -146,4 +154,4 @@ Matrix GaussSlau(const Matrix& A, const Matrix& b) {
 		res.v[i][0] = W.v[i][n];
 
 	return res;
-}*/
+}
