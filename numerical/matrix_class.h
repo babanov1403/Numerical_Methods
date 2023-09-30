@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <algorithm>
 #include <vector>
 using namespace std;
 
@@ -111,7 +112,7 @@ public:
 };
 ostream& operator<<(ostream& os, const Matrix& a){
 	for (auto i : a.v) {
-		for (auto j : i)
+		for (double j : i)
 			os << j << " ";
 		os << '\n';
 	}
@@ -120,34 +121,44 @@ ostream& operator<<(ostream& os, const Matrix& a){
 
 Matrix GaussSlau(const Matrix& A, const Matrix& b) {
 	size_t n = b.n;
-	cout << n << '\n';
 	Matrix W(n, n + 1);
 	for (int i = 0; i < n; i++) {
 		copy((A.v[i]).begin(), (A.v[i]).end(), (W.v[i]).begin());
 		W.v[i][n] = b.v[i][0];
 	}
 	for (size_t j = 0; j < n; j++) {
-		size_t maxx = j;
-		for (size_t i = j + 1; i < n; i++)
-			maxx = abs(W.v[i][j]) > abs(W.v[i][maxx]) ? j : maxx;
-
-		std::swap(W.v[maxx], W.v[j]);
-		for (int dd = 0; dd < W.m; dd++)
-			W.v[j][dd] /= W.v[j][j];
-		cout << W << " <------\n";
-		for (size_t i = j + 1; i < n; i++)
-			for (size_t dd = 0; dd < W.m; dd++)
-				W.v[i][dd] -= (W.v[j][dd] * W.v[i][j]);
+		int maxx = j;
+		for (size_t i = j + 1; i < n; i++) 
+			if (abs(W(maxx, j)) > abs(W(i, j))) {
+				swap(W.v[maxx], W.v[i]);
+				maxx = i;
+			}
+		cout << W << "-------->\n";
+		double denom = W(j, j);
+		for (size_t i = 0; i < n + 1; i++) {
+			W(j, i) = W(j, i) * 1.0 / denom;
+		}
+		for (size_t i = j + 1; i < n; i++) {
+			denom = W(i, j);
+			for (size_t q = 0; q < n + 1; q++) {
+				W(i, q) = W(i, q) - (W(j, q) * denom);
+			}
+		}
 	}
+	cout << W << "-------->\n";
 	// inverse
-	for (size_t j = n - 1; j > 0; j--)
+	for (int j = n - 1; j > 0; j--)
 	{
-		for (int dd = 0; dd < n; dd++)
-			W.v[j][dd] /= W.v[j][j];
+		//for (int dd = 0; dd < n; dd++)
+		//	W.v[j][dd] /= W.v[j][j];
 
-		for (size_t i = j - 1; i < n; i++)
-			for (int dd = 0; dd < n; dd++)
-				W.v[i][dd] = W.v[i][dd] - (W.v[j][dd] * W.v[i][j]);
+		for (int i = j - 1; i >= 0; i--) {
+			cout << i << " " << j << '\n';
+			double denom = W(i, j);
+			for (int dd = 0; dd < n + 1; dd++) //CAN GET MORE EFFIENCY
+				W(i, dd) = W(i, dd) - (W(j, dd) * denom);
+		}
+		cout << W << " <------\n";
 	}
 	Matrix res(n, 1);
 	for (size_t i = 0; i < n; i++)
