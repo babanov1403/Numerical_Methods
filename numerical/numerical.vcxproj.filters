@@ -21,6 +21,12 @@
     <ClInclude Include="row_class.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="integrate_methods.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="functions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

@@ -127,6 +127,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="functions.h" />
+    <ClInclude Include="integrate_methods.h" />
     <ClInclude Include="matrix_class.h" />
     <ClInclude Include="row_class.h" />
   </ItemGroup>
