@@ -128,6 +128,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="burger.h" />
     <ClInclude Include="functions.cpp" />
     <ClInclude Include="integrate_methods.h" />
     <ClInclude Include="matrix_class.h" />

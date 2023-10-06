@@ -90,6 +90,26 @@ namespace biv {
 			v = a.v;
 			return a;
 		}
+		
+		Matrix operator^(int k) {
+			if (this->n != this->m) {
+				cout << "n != m \n";
+				throw;
+			}
+			Matrix<Number> Res(this->n, this->n, static_cast<Number>(0));
+			Matrix<Number> A = *this;
+			for (int i = 0; i < n; i++) Res(i, i) = 1;
+			while (k > 0) {
+				if ((k & 1) != 0) Res = Res*A;
+				A = A*A;
+				k >>= 1;
+				cout << "A\n";
+				cout << A;
+				cout << "Res\n";
+				cout << Res;
+			}
+			return Res;
+		}
 
 		//Matrix Multipl
 		Matrix operator*(Matrix b) {
@@ -109,6 +129,7 @@ namespace biv {
 			}
 			return res;
 		}
+
 		Matrix transpose() {
 			Matrix& a = *this;
 			Matrix b(a.m, a.n);

@@ -4,6 +4,7 @@
 #include "integrate_methods.h"
 #include "matrix_class.h"
 #include <cmath>
+#include "burger.h"
 
 using namespace std;
 using namespace biv;
@@ -21,7 +22,10 @@ int main() {
 	/*vector<double> nodes = makeNodes(27);
 	double integrale = computeIntegral(makeISF(nodes), nodes);
 	cout << setprecision(11) << integrale << " ";*/
-	Matrix<double> GGG = makeSFGauss<double>(3);
-	cout << GGG;
+	/*Matrix<double> GGG = makeSFGauss<double>(3);
+	cout << GGG;*/
+	
+	
+
 
 }
