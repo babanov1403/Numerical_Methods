@@ -159,10 +159,11 @@ namespace biv {
 			copy((A.v[i]).begin(), (A.v[i]).end(), (W.v[i]).begin());
 			W.v[i][n] = b.v[i][0];
 		}
+		//cout << "W:\n" << W;
 		for (int j = 0; j < n; j++) {
 			int maxx = j;
 			for (int i = j + 1; i < n; i++)
-				if (abs(W(maxx, j)) > abs(W(i, j))) {
+				if (abs(W(maxx, j)) < abs(W(i, j))) {
 					swap(W.v[maxx], W.v[i]);
 					maxx = i;
 				}
@@ -177,6 +178,7 @@ namespace biv {
 				}
 			}
 		}
+		//cout << "W:\n" << W;
 		// inverse
 		for (int j = static_cast<int>(n) - 1; j > 0; j--)
 		{
@@ -192,7 +194,6 @@ namespace biv {
 		Matrix<Number> res(n, 1);
 		for (size_t i = 0; i < n; i++)
 			res.v[i][0] = W.v[i][n];
-
 		return res;
 	}
 }

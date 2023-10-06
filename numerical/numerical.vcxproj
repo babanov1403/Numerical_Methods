@@ -128,10 +128,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="functions.h" />
+    <ClInclude Include="functions.cpp" />
     <ClInclude Include="integrate_methods.h" />
     <ClInclude Include="matrix_class.h" />
-    <ClInclude Include="row_class.h" />
+    <ClInclude Include="polynom_class.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
