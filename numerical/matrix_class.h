@@ -77,12 +77,32 @@ namespace biv {
 				for (auto& j : i) j *= x;
 			return m;
 		}
+		Matrix operator+(Matrix A) {
+			Matrix<Number> res = *this;
+			if (this->n != A.n || this->m != A.m) {
+				cout << "bad sum of matrices\n";
+				throw;
+			}
+			for (int i = 0; i < A.n; i++) {
+				for (int j = 0; j < A.m; j++)
+					res(i, j) += A(i, j);
+			}
+			return res;
+		}
 
 		Matrix& operator*=(Number x) {
 			Matrix m = this->v;
 			for (auto& i : this->v)
 				for (auto& j : i) j *= x;
 			return m;
+		}
+		Matrix& operator*=(Matrix a) {
+			*this = *this * a;
+			return *this;
+		}
+		Matrix& operator+=(Matrix a) {
+			*this = *this + a;
+			return *this;
 		}
 		Matrix& operator=(Matrix a) {
 			n = a.n;
@@ -129,7 +149,6 @@ namespace biv {
 			}
 			return res;
 		}
-
 		Matrix transpose() {
 			Matrix& a = *this;
 			Matrix b(a.m, a.n);

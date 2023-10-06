@@ -24,8 +24,14 @@ int main() {
 	cout << setprecision(11) << integrale << " ";*/
 	/*Matrix<double> GGG = makeSFGauss<double>(3);
 	cout << GGG;*/
-	
-	
+	Matrix<double> A = { {1, 0}, {0, -2} };
+	Matrix<double> b = Matrix<double>{ 1, 2 }.transpose();
+	Matrix<double> x0 = Matrix<double>{ 1, 2 }.transpose();
+	double t0 = 0, t1 = 10;
+	double h = 1;
+	Matrix<double> C = { 4, 1 };
+	Matrix<double> H = { {2, 1}, {3, 4} };
+	Matrix<double> g = Matrix<double>{ -1, 1 }.transpose();
 
-
+	
 }
