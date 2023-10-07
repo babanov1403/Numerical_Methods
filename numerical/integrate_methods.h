@@ -3,6 +3,7 @@
 #include "matrix_class.h"
 #include <iostream>
 #include <cmath>
+#include "burger.h"
 
 static const double alpha = 1.0 / 3;
 static const double a = 1.5;
@@ -28,7 +29,7 @@ namespace biv {
 	template <typename Number>
 	double computeIntegral(Matrix<Number> Mu, const vector<double>& nodes);
 	template <typename Number> 
-	Matrix<Number> RhimannIntegrale(const Matrix<Number>& A, double x0, double x1, int N = 1e5);
+	Matrix<Number> RhimannIntegrale(double, double, int, Matrix<Number>(*MatrixFunc)(double ksi));
 
 	template <typename Number>
 	Matrix<Number> makeISF(const vector<Number>& nodes) {
@@ -54,9 +55,9 @@ namespace biv {
 		return ans;
 	}
 	template <typename Number>
-	Matrix<Number> computeIntegral(Matrix<Number> Aj, const vector<double>& nodes) {
+	double computeIntegral(Matrix<Number> Aj, const vector<double>& nodes) {
 		int n = Aj.n;
-		Matrix<Number> integrale;
+		double integrale;
 		vector<double> sl(n);
 		for (int i = 0; i < n; i++) {
 			sl[i] = Aj(i, 0) * func(nodes[i]);// xj = tj + a(a a + b / 2 b)
@@ -85,17 +86,17 @@ namespace biv {
 		cout << B;
 		Matrix<Number> A_ = GaussSlau(A, B);//a[i] of our poly		
 	}
-	template <typename Number>
-	Matrix<Number> RhimannIntegrale(const Matrix<Number>& A, double x0, double x1, int N = 1e5) {
+	/*template <typename Number>
+	Matrix<Number> RhimannIntegrale(double x0, double x1, int N = 1e5, Matrix<Number> (*MatrixFunc)(double ksi)) {
 		double h = (x1 - x0) / N;
-		Matrix<Number> res(A.n, A.n, 0);
+		Matrix<Number> res = MatrixFunc(x0);
 		Matrix<Number> curr = res;
-		for (double ksi = x0; ksi <= x1; ksi += h) {
-			curr = biv::buildRowexpA(A, ksi);
+		for (double ksi = x0+h; ksi <= x1; ksi += h) {
+			curr = MatrixFunc(ksi);
 			curr *= h;
 			res += h;
 		}
 		return res;
-	}
+	}*/
 }  
 

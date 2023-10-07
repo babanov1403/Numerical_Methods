@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -96,10 +97,7 @@ namespace biv {
 				for (auto& j : i) j *= x;
 			return m;
 		}
-		Matrix& operator*=(Matrix a) {
-			*this = *this * a;
-			return *this;
-		}
+		
 		Matrix& operator+=(Matrix a) {
 			*this = *this + a;
 			return *this;
@@ -123,10 +121,6 @@ namespace biv {
 				if ((k & 1) != 0) Res = Res*A;
 				A = A*A;
 				k >>= 1;
-				cout << "A\n";
-				cout << A;
-				cout << "Res\n";
-				cout << Res;
 			}
 			return Res;
 		}
@@ -148,6 +142,10 @@ namespace biv {
 				}
 			}
 			return res;
+		}
+		Matrix& operator*=(Matrix a) {
+			*this = *this * a;
+			return *this;
 		}
 		Matrix transpose() {
 			Matrix& a = *this;

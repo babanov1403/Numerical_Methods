@@ -4,37 +4,51 @@
 #include "integrate_methods.h"
 
 namespace biv {
-	static const double t0 = 0;
-	static Matrix<double> X0 = Matrix<double>{ 1, 2 }.transpose();
 
 	template <typename Number>
-	Matrix<Number> buildRowexpA(const Matrix<Number>& A, double t, int k = 20) {
-		std::cout << X0;
+	Matrix<Number> buildRowexpA(const Matrix<Number>&, double, int);
+	template <typename Number>
+	Matrix<Number> buildG();
+	template <typename Number>
+	Matrix<Number> computeMatrixMulti(const vector<Matrix<Number>>& v, double ksi);
+
+	template <typename Number>
+	Matrix<Number> buildRowexpA(const Matrix<Number>& A, double t, int k = 200) {
 		Matrix<Number> T(1, 1, t);
 		Matrix<Number> Res(A.n, A.n, 0);
-		Matrix<Number> Curr(A.n, A.n, 0);
-		//maybe do backwards?
-		for (int i = 0; i < A.n; i++) Curr(i, i) = 1;
-		for (int q = 1; q <= k; q++) {
+		Matrix<Number> CurrA(A.n, A.n, 0);
+		double currnumber = 1;
+		//https://habr.com/ru/articles/239303/
+
+		for (int i = 0; i < A.n; i++) CurrA(i, i) = 1;
+		for (double q = 1; q <= k; q++) {//might be better
 			cout << Res;
-			cout << '\n';
-			Curr *= A;
-			Curr *= t / q;
-			Res += Curr;
+			CurrA *= A;
+			currnumber *= 1.0 / q;
+			cout << CurrA;
+			cout << currnumber << "\n";
+			Res += CurrA*currnumber;
 		}
+		cout << Res;
+		Res = Res^(t);
 		return Res;
 	}
-	/*
-	*x' = Ax + bu
-	*x(t0) = x0
-	* [t0, t1]
-	* h = (t1 - t0)/N
-	* vector<int> U;??? Matrix?
-	* C.transpose()*x(t1) -> max
-	* H * x(t1) = g
-	* 1) Ch(t) = integrale(Z^T*b(t)dt)
-	*
-	* 
-	* 
-	*/
+	template <typename Number>
+	Matrix<Number> compute_x0(const Matrix<Number> A, const Matrix<Number> x0, double t, double t0) {
+		Matrix<Number> x = buildRowexpA(A, t);
+		cout << x;
+		cout << "x^^^^^^^^^\n";
+		cout << pow(2.718281828, -20) << "\n";
+		//x *= buildRowexpA(A, t0).inverse();
+		//x *= x0;
+		return x;
+	}
+	template <typename Number>
+	Matrix<Number> compute_g0(const Matrix<Number>& g, const Matrix<Number>& H, const Matrix<Number>& x0) {
+		Matrix<Number> g0 = g;
+		Matrix<Number> helper = H;
+		helper *= x0;
+		g0 = g0 + helper * (-1);
+		return g0;
+	}
 }

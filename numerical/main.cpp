@@ -29,9 +29,19 @@ int main() {
 	Matrix<double> x0 = Matrix<double>{ 1, 2 }.transpose();
 	double t0 = 0, t1 = 10;
 	double h = 1;
-	Matrix<double> C = { 4, 1 };
+	Matrix<double> C = Matrix<double>{ 4, 1 }.transpose();
 	Matrix<double> H = { {2, 1}, {3, 4} };
 	Matrix<double> g = Matrix<double>{ -1, 1 }.transpose();
+	//Matrix<double> g0 = compute_g0(g, H, compute_x0(A, x0, t1, t0));
+	//cout << "g0:\n";
+	//cout << g0;
+	cout << "x(t):\n";
+	cout << compute_x0(A, x0, t1, t0);
 
+	/*Matrix<double> Asopr = A * (-1);
+	Asopr = Asopr.transpose();*/
+
+	//ÍÀÄÎ ÁÓÄÅÒ ÏÎÑÒĞÎÈÒÜ ÌÀÒĞÈÖÓ G(t) È ÍÀÉÒÈ ÔÓÍÄÀÌÅÍÒÀËÜÍÓŞ ÄËß -A^T È ÏÎÑËÅ İÒÎÃÎ ÏÎÑ×ÈÒÀÒÜ ÈÍÒÅÃĞÀËÛ
+	//È ÂÑÅ ÃÃ ÂÛÂÅÑÒÈ ÊĞÀÑÈÂÎ ÂÅÊÒÎĞ U(u1, u2, u3, u4....., un) è åùå ïîñ÷èòàòü g0 => ñäåëàíî
 	
 }
