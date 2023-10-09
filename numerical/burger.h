@@ -8,12 +8,17 @@ namespace biv {
 	template <typename Number>
 	Matrix<Number> buildRowexpA(const Matrix<Number>&, double, int);
 	template <typename Number>
-	Matrix<Number> buildG();
+	Matrix<Number> compute_G(const Matrix<Number>& A, const Matrix<Number>& H, double t, double t1);
 	template <typename Number>
 	Matrix<Number> computeMatrixMulti(const vector<Matrix<Number>>& v, double ksi);
+	template <typename Number>
+	Matrix<Number> compute_x0(const Matrix<Number>& A, Matrix<Number>& x0, double t, double t0);
+	template <typename Number>
+	Matrix<Number> compute_g0(const Matrix<Number>& g, const Matrix<Number>& H, const Matrix<Number>& x0);
+
 
 	template <typename Number>
-	Matrix<Number> buildRowexpA(const Matrix<Number>& A, double t, int k = 15) {
+	Matrix<Number> buildRowexpA(const Matrix<Number>& A, double t, int k = 30) {
 		Matrix<Number> T(1, 1, t);
 		Matrix<Number> Res(A.n, A.n, 0);
 		Matrix<Number> CurrA(A.n, A.n, 0);
@@ -45,4 +50,12 @@ namespace biv {
 		g0 = g0 + helper * (-1);
 		return g0;
 	}
+	template <typename Number>
+	Matrix<Number> compute_G(const Matrix<Number>& A, const Matrix<Number>& H, double t, double t1) {
+		Matrix<Number> G = H;
+		G = G * buildRowexpA(A, t1);
+		G = G * (buildRowexpA(A, t).inverse());
+		return G;
+	}
+
 }

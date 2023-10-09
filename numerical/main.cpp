@@ -37,7 +37,9 @@ int main() {
 	Matrix<double> g0 = compute_g0(g, H, compute_x0(A, x0, t1, t0));
 	cout << "g0:\n";
 	cout << g0;
-
+	Matrix<double> G = compute_G(A, H, t0, t1);
+	cout << "G:\n";
+	cout << G;
 	/*Matrix<double> Asopr = A * (-1);
 	Asopr = Asopr.transpose();*/
 
