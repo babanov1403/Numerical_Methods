@@ -58,7 +58,7 @@ namespace biv {
 		}
 		Number& operator()(int i, int j) {
 			if (i >= this->n || j >= this->m) {
-				cout << "Seg Fault\n";
+				cout << "list of matrix is out of range\n";
 				throw;
 			}
 			return this->v[i][j];
@@ -73,10 +73,10 @@ namespace biv {
 		}
 		//Multiply by number
 		Matrix operator*(Number x) {
-			Matrix m = this->v;
-			for (auto& i : m.v)
+			Matrix B = *this;
+			for (auto& i : B.v)
 				for (auto& j : i) j *= x;
-			return m;
+			return B;
 		}
 		Matrix operator+(Matrix A) {
 			Matrix<Number> res = *this;
@@ -127,27 +127,29 @@ namespace biv {
 
 		//Matrix Multipl
 		Matrix operator*(Matrix b) {
+			//cout << this->m << " " << b.n << "<------\n";
 			if (this->m != b.n) {
 				cout << "Bad dimensions in multiplying\n";
-				return b;
+				throw;
 			}
-			Number curr_sum = 0;
-			Matrix a = this->v;
-			Matrix res(a.n, b.m);
-			for (int i = 0; i < a.n; i++) {
-				for (int j = 0; j < a.n; j++) {//i, j position in new matrix
-					res.v[i][j] = 0;
-					for (int q = 0; q < a.m; q++)
-						res.v[i][j] += a.v[i][q] * b.v[q][j];
+			double curr_sum = 0;
+			Matrix res(n, b.m);
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < b.m; j++) {//i, j position in new matrix
+					res(i, j) = 0;
+					for (int q = 0; q < m; q++){
+						res(i, j) += (*this)(i, q) * b(q, j);
+					}
 				}
 			}
 			return res;
 		}
-		Matrix& operator*=(Matrix a) {
+		//ÏÎÑÌÎÒÐÅÒÜ ËÅÊÖÈÞ
+		/*Matrix& operator*=(Matrix a) {
 			*this = *this * a;
 			return *this;
 		}
-		Matrix transpose() {
+	*/	Matrix transpose() {
 			Matrix& a = *this;
 			Matrix b(a.m, a.n);
 			for (int i = 0; i < a.m; i++)
