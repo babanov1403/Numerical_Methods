@@ -124,7 +124,7 @@ Matrix<Number> buildD(
 	, const Matrix<Number>& g
 	, const Matrix<Number>& x0) {
 	if (t1 <= t0) {
-		cout << "wrong constraints i think\n";
+		cout <<"bad build D\n";
 		throw;
 	}
 	double h = (t1 - t0) / N;
@@ -154,12 +154,18 @@ Matrix<Number> computeDh(
 	Matrix<Number> res = compute_G(A, H, a, t1);
 	res = res * B;
 	res *= h;
+
 	Matrix<Number> curr = res;
+	cout << "ksi:\n";
 	for (double ksi = a + h; ksi <= b; ksi += h) {
-		curr = compute_G(A, H, ksi, t1) * B;
+		cout << ksi << '\n';
+		curr = compute_G(A, H, ksi, t1) * B; //а почему дискретно то емае
+		cout << curr;
 		curr *= h;
 		res += curr;
 	}
+	cout << a << " " << b << '\n';
+	cout << res;
 	return res;
 }
 template <typename Number>
@@ -179,7 +185,7 @@ double computeCh(
 	res = res * B;
 	res *= h;
 	Matrix<Number> curr = res;
-	for (double ksi = a; ksi <= b; ksi += h) {
+	for (double ksi = a+h; ksi <= b; ksi += h) {
 		curr = buildRowexpA(A, ksi)*B;
 		curr *= h;
 		res += curr;

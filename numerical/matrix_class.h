@@ -182,7 +182,7 @@ template <typename Number>
 ostream& operator<<(ostream& os, const Matrix<Number>& a) {
 	for (auto i : a.v) {
 		for (double j : i)
-			os << j << " ";
+			os << setprecision(10) << j << " ";
 		os << '\n';
 	}
 	return os;
