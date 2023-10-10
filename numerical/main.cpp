@@ -22,30 +22,25 @@ int main() {
 	/*vector<double> nodes = makeNodes(27);
 	double integrale = computeIntegral(makeISF(nodes), nodes);
 	cout << setprecision(11) << integrale << " ";*/
-	/*Matrix<double> GGG = makeSFGauss<double>(3);
-	cout << GGG;*/
 	Matrix<double> A = { {1, 0}, {0, -2} };
 	Matrix<double> b = Matrix<double>{ 1, 2 }.transpose();
 	Matrix<double> x0 = Matrix<double>{ 1, 2 }.transpose();
 	cout << "x0:\n";
 	cout << x0;
 	double t0 = 0, t1 = 10;
-	double h = 1;
+	size_t N = 2;
 	Matrix<double> C = Matrix<double>{ 4, 1 }.transpose();
 	Matrix<double> H = { {2, 1}, {3, 4} };
 	Matrix<double> g = Matrix<double>{ -1, 1 }.transpose();
-	Matrix<double> g0 = compute_g0(g, H, compute_x0(A, x0, t1, t0));
-	cout << "g0:\n";
-	cout << g0;
-	Matrix<double> G = compute_G(A, H, t0, t1);
-	cout << "G:\n";
-	cout << G;
-	/*Matrix<double> Asopr = A * (-1);
-	Asopr = Asopr.transpose();*/
+	Matrix<double> C_res = buildC(t0, t1, N, A, b, H, g, x0);
+	Matrix<double> D_res = buildD(t0, t1, N, A, b, H, g, x0);
+	cout << "C:\n";
+	cout << C_res;
+	cout << "D:\n";
+	cout << D_res;
 
+	
 
-
-	//Õ¿ƒŒ ¡”ƒ≈“ œŒ—“–Œ»“‹ Ã¿“–»÷” G(t) » Õ¿…“» ‘”Õƒ¿Ã≈Õ“¿À‹Õ”ﬁ ƒÀﬂ -A^T » œŒ—À≈ ›“Œ√Œ œŒ—◊»“¿“‹ »Õ“≈√–¿À€
-	//» ¬—≈ √√ ¬€¬≈—“»  –¿—»¬Œ ¬≈ “Œ– U(u1, u2, u3, u4....., un) Ë Â˘Â ÔÓÒ˜ËÚ‡Ú¸ g0 => Ò‰ÂÎ‡ÌÓ
+	
 	
 }
