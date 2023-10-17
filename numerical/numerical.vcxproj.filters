@@ -27,10 +27,10 @@
     <ClInclude Include="polynom_class.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="burger.h">
+    <ClInclude Include="burger_prot.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="burger_prot.h">
+    <ClInclude Include="burger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

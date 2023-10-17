@@ -1,38 +1,39 @@
 #pragma once
+#include "polynom_class.h"
 #include "matrix_class.h"
 #include <iostream>
 #include "integrate_methods.h"
 #include "burger_prot.h"
+using namespace std;
 
-namespace biv {
+namespace biv{
 template <typename Number>
-Matrix<Number> buildRowexpA(const Matrix<Number>& A, double t, int k = 300) {
-	Matrix<Number> T(1, 1, t);
-	Matrix<Number> Res(A.n, A.n, 0);
-	Matrix<Number> CurrA(A.n, A.n, 0);
-	double currnumber = 1;
-	//https://habr.com/ru/articles/239303/
-	for (int i = 0; i < A.n; i++) CurrA(i, i) = 1;
-	Res += CurrA;
-	int counter = 0;
-	while (t > 10) {//might be better
-		t /= 2;
-		k++;
+Polynom<Matrix<Number>> buildRowexp_A(const Matrix<Number>& A, int k = 35) {
+	if (A.n != A.m) {
+		std::cerr << "what do you think i will do with this matrix?\n";
+		throw;
 	}
-	for (double q = 1; q <= k; q++) {//might be better
-		CurrA = CurrA * A;
-		currnumber *= t / q;
-		Res += CurrA * currnumber;
+	Matrix<Number> XD(A.n, A.n, 0);
+	for (int i = 0; i < A.n; i++) {
+		XD(i, i) = 1;
 	}
-	Res = Res ^ static_cast<int>(pow(2, counter));
-	return Res;
+	Polynom<Matrix<Number>> res(k);
+	double curr = 1;
+	res[0] = XD*curr;
+	for (int i = 1; i < k; i++) {
+		curr *= 1.0 / i;
+		XD = XD*A;
+		res[i] = XD * curr;
+	}
+	return res;
 }
 Matrix<double> A = { {1, 0}, {0, -2} };
+static Polynom<Matrix<double>> expRowA = buildRowexp_A(A);
 Matrix<double> B = Matrix<double>{ 1, 2 }.transpose();
 Matrix<double> x0 = Matrix<double>{ 1, 2 }.transpose();
 double t0 = 0, t1 = 10;
-static Matrix<double> expA_t0 = buildRowexpA(A, t0);
-static Matrix<double> expA_t1 = buildRowexpA(A, t1);
+static Matrix<double> expA_t0 = expRowA.value(t0);
+static Matrix<double> expA_t1 = expRowA.value(t1);
 static Matrix<double> expA_t1_inv = expA_t1.inverse();
 size_t N = 2;
 Matrix<double> C = Matrix<double>{ 4, 1 }.transpose();
@@ -44,7 +45,7 @@ namespace biv {
 
 template <typename Number>
 Matrix<Number> compute_x0(const Matrix<Number>& A, Matrix<Number>& x0, double t, double t0) {
-	Matrix<Number> x = buildRowexpA(A, t);
+	Matrix<Number> x = expRowA.value(t);
 	x = x*expA_t0.inverse(); 
 	x = x * x0;
 	return x;
@@ -67,7 +68,7 @@ Matrix<Number> compute_G(const Matrix<Number>& A, const Matrix<Number>& H, doubl
 	//cout << G;
 	//cout << "exp(A):\n";
 	//cout << buildRowexpA(A, t);
-	G = G * (buildRowexpA(A, t).inverse());
+	G = G * (expRowA.value(t).inverse());
 	//cout << "G:\n";
 	//cout << G;
 	return G;
@@ -160,7 +161,7 @@ double computeCh(
 	Matrix<Number> res = C.transpose();
 	//cout << "DOT:\n";
 	//cout << a << '\n';
-	res = res * buildRowexpA(A, a);
+	res = res * expRowA.value(a);
 	res = res * expA_t1_inv;
 	res = res * B;
 	res *= h;
@@ -173,7 +174,7 @@ double computeCh(
 		curr = curr * expA_t1;
 		//cout << "xe^A(ksi):\n";
 		//cout << curr;
-		curr = curr * buildRowexpA(A, ksi).inverse();
+		curr = curr * expRowA.value(ksi).inverse();
 		//cout << "xe^A-1(t*):\n";
 		//cout << curr;
 		curr = curr * B;

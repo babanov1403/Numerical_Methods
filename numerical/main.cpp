@@ -5,6 +5,7 @@
 #include "matrix_class.h"
 #include <cmath>
 #include "burger.h"
+#include "polynom_class.h"
 
 using namespace biv;
 using namespace std;
@@ -29,16 +30,12 @@ int main() {
 	//cout << "G:\n";
 	//Matrix<double> G = compute_G(A, H, t0, t1);
 	//cout << G;
+	cout << expRowA;
 	Matrix<double> C_res = buildC(t0, t1, N, A, B, H, g, x0);
 	cout << "C:\n";
 	cout << C_res;
 	//Matrix<double> D_res = buildD(t0, t1, N, A, B, H, g, x0);
 	//cout << "D:\n";
 	//cout << D_res;
-	
 
-	
-
-	
-	
 }

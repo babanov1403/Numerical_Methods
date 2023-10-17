@@ -1,15 +1,9 @@
 #pragma once
 #include "matrix_class.h"
 using namespace biv;
-
-
-
-
 namespace biv{
 template <typename Number>
 Matrix<Number> compute_G(const Matrix<Number>& A, const Matrix<Number>& H, double t);
-template <typename Number>
-Matrix<Number> computeMatrixMulti(const vector<Matrix<Number>>& v, double ksi);
 template <typename Number>
 Matrix<Number> compute_x0(const Matrix<Number>& A, Matrix<Number>& x0, double t, double t0);
 template <typename Number>
