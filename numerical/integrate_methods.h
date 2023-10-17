@@ -4,10 +4,11 @@
 #include <iostream>
 #include <cmath>
 #include "burger.h"
-
-static const double alpha = 1.0 / 3;
-static const double a = 1.5;
-static const double b = 3.3;
+namespace var_b {
+	static const double alpha = 1.0 / 3;
+	static const double a = 1.5;
+	static const double b = 3.3;
+}
 /*
 static const double alpha = 1;
 static const double a = 0;
@@ -39,16 +40,16 @@ Matrix<Number> makeISF(const vector<Number>& nodes) {
 	Matrix<Number> A(nodes.size(), nodes.size());
 	for (int i = 0; i < nodes.size(); i++) 
 		for (int j = 0; j < nodes.size(); j++) 
-			A(i, j) = pow(nodes[j]-a, i); //t = x-a   f(xj - a)
+			A(i, j) = pow(nodes[j]-var_b::a, i); //t = x-a   f(xj - a)
 	Matrix<Number> Outp = GaussSlau(A, Mu);
 	return Outp;
 }
 double computeMoment(double k) {
-	k -= alpha;
+	k -= var_b::alpha;
 	double ans;
-	if (k == -1) ans = log(b - a);
+	if (k == -1) ans = log(var_b::b - var_b::a);
 	else {
-		ans = pow((b - a), k + 1);
+		ans = pow((var_b::b - var_b::a), k + 1);
 		ans /= k + 1;
 	}
 	//cout << ans << " " << k << '\n';
