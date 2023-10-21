@@ -9,16 +9,6 @@
 
 using namespace biv;
 using namespace std;
-vector<double> makeNodes(int n, short int type = 0) {
-	if (type == 0) {//RAVNOMERNO
-		vector<double> nodes(n);
-		double h = (var_b::b - var_b::a) / n;
-		nodes[0] = var_b::a;
-		for (int i = 1; i < n; i++) 
-			nodes[i] = nodes[i - 1] + h;
-		return nodes;
-	}
-}
 int main() {
 	/*vector<double> nodes = makeNodes(27);
 	double integrale = computeIntegral(makeISF(nodes), nodes);

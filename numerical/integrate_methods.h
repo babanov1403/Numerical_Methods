@@ -32,6 +32,17 @@ double computeIntegral(Matrix<Number> Mu, const vector<double>& nodes);
 template <typename Number> 
 Matrix<Number> RhimannIntegrale(double, double, int, Matrix<Number>(*MatrixFunc)(double ksi));
 
+vector<double> makeNodes(int n, short int type = 0, double a = var_b::a, double b = var_b::b) {
+	if (type == 0) {//RAVNOMERNO
+		vector<double> nodes(n);
+		double h = (b - a) / n;
+		nodes[0] = a;
+		for (int i = 1; i < n; i++)
+			nodes[i] = nodes[i - 1] + h;
+		return nodes;
+	}
+}
+
 template <typename Number>
 Matrix<Number> makeISF(const vector<Number>& nodes) {
 	Matrix<Number> Mu(nodes.size(), 1);
@@ -55,6 +66,7 @@ double computeMoment(double k) {
 	//cout << ans << " " << k << '\n';
 	return ans;
 }
+
 template <typename Number>
 double computeIntegral(Matrix<Number> Aj, const vector<double>& nodes) {
 	int n = Aj.n;
@@ -67,6 +79,7 @@ double computeIntegral(Matrix<Number> Aj, const vector<double>& nodes) {
 	for (auto i : sl) integrale += i;
 	return integrale;
 }
+
 template <typename Number>
 Matrix<Number> makeSFGauss(int n) {
 	Matrix<Number> Mu(2 * n, 1);

@@ -8,7 +8,7 @@ using namespace std;
 
 namespace biv{
 template <typename Number>
-Polynom<Matrix<Number>> buildRowexp_A(const Matrix<Number>& A, int k = 35) {
+Polynom<Matrix<Number>> buildRowexp_A(const Matrix<Number>& A, int k = 25) {
 	if (A.n != A.m) {
 		std::cerr << "what do you think i will do with this matrix?\n";
 		throw;
@@ -43,6 +43,44 @@ Matrix<double> g = Matrix<double>{ -1, 1 }.transpose();
 
 namespace biv {
 
+//две функции - первая считает че стоит под интегралом у C, вторая у D(в точке)
+
+
+
+template <typename Number>
+Matrix<Number> computeMoment(int k, int matrix_size, double a, double b) {
+	if (k == -1) {
+		cout << "k == -1\n";
+		throw;
+	}
+	Matrix<Number> ans(matrix_size);
+	double ans_scalar = my_pow(b, k + 1)*1.0 / (k + 1) - my_pow(a, k + 1)*1.0 / (k + 1);
+	for (int i = 0; i < matrix_size; i++)
+		ans[i][i] = ans_scalar;
+	return ans;
+}
+/*
+* Когда я считаю Ch => т.е у меня из произв матриц получается скаляр, для которого у меня будут
+* уже готовые Ai - тоже скаляры
+* потому что в первом случае весовая функция p(x) == 1, а во втором(Dh) она равна p(x) == 1
+*/
+
+template <typename Number>
+Matrix<Number> makeISF_CD(const vector<Number>& nodes) {
+	Matrix<Number> Mu(nodes.size(), 1, 0);
+	double a = nodes[0], b = nodes.back();
+	for (int i = 0; i < nodes.size(); i++)
+		Mu(i, 0) = computeMoment(i, 1, a, b);
+	Matrix<Number> A(nodes.size(), nodes.size());
+	for (int i = 0; i < nodes.size(); i++)
+		for (int j = 0; j < nodes.size(); j++)
+			A(i, j) = my_pow(nodes[j], i); 
+	Matrix<Number> Outp = GaussSlau(A, Mu);
+	return Outp;
+}
+
+
+
 template <typename Number>
 Matrix<Number> compute_x0(const Matrix<Number>& A, Matrix<Number>& x0, double t, double t0) {
 	Matrix<Number> x = expRowA.value(t);
@@ -60,17 +98,9 @@ Matrix<Number> compute_g0(const Matrix<Number>& g, const Matrix<Number>& H, cons
 }
 template <typename Number>
 Matrix<Number> compute_G(const Matrix<Number>& A, const Matrix<Number>& H, double t) {
-	//cout << t << "<-G->" << t1 << '\n';
 	Matrix<Number> G = H;
-	//cout << G;
-	//cout << expA_t1;
 	G = G * expA_t1;
-	//cout << G;
-	//cout << "exp(A):\n";
-	//cout << buildRowexpA(A, t);
-	G = G * (expRowA.value(t).inverse());
-	//cout << "G:\n";
-	//cout << G;
+	G = G * (expRowA.value(t)).inverse();
 	return G;
 }
 template <typename Number>
@@ -121,6 +151,64 @@ Matrix<Number> buildD(
 	}
 	return D;
 }
+
+template <typename Number>
+Matrix<Number> func_Dh(
+	double a
+	, double t1
+	, const Matrix<Number>& B
+	, const Matrix<Number>& A
+	, const Matrix<Number>& H) {
+	Matrix<Number> res = compute_G(A, H, a) * B;
+	return res;
+}
+
+template <typename Number> 
+Number func_Ch(
+	double a
+	, Matrix<Number> A
+	, const Matrix<Number>& B) {
+	Matrix<Number> res = C.transpose();
+	res = res * expRowA.value(a);
+	res = res * expA_t1_inv;
+	res = res * B;
+	return res;
+}
+
+//доделать считатели и продебажить
+template <typename Number>
+double computeCh(double a
+	, double b
+	, Matrix<Number> A
+	, const Matrix<Number>& B) {
+	int n = Aj.n;
+	double integrale;
+	vector<double> sl(n);
+	for (int i = 0; i < n; i++)
+		sl[i] = Aj(i, 0) * func_Ch(nodes[i]);
+	sort(sl.begin(), sl.end());
+	for (auto i : sl) integrale += i;
+	return integrale;
+}
+template <typename Number>
+Matrix<double> computeDh(double a
+	, double b
+	, double t1
+	, const Matrix<Number>&B
+	, const Matrix<Number>&A
+	, const Matrix<Number>&H) {
+	int n = Aj.n;
+	Matrix<double> integrale(;
+	vector<double> sl(n);
+	for (int i = 0; i < n; i++) {
+		sl[i] = Aj(i, 0) * func_Dh(nodes[i]);// xj = tj + a(a a + b / 2 b)
+	}
+	sort(sl.begin(), sl.end());
+	for (auto i : sl) integrale += i;
+	return integrale;
+}
+
+
 template <typename Number>
 Matrix<Number> computeDh(
 	double a

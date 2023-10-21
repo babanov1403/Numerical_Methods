@@ -44,6 +44,11 @@ public:
 		vector<vector<Number>> q(n, vector<Number>(m));
 		v = q;
 	}
+	Matrix(size_t n): n(n), m(n){//make E
+		vector<vector<Number>> q(n, vector<Number>(n, 0));
+		for (int i = 0; i < n; i++) q[i][i] = 1;
+		v = q;
+	}
 	Matrix(size_t n, size_t m, Number t)
 		: n(n)
 		, m(m) {
@@ -57,7 +62,7 @@ public:
 		v = a.v;
 	}
 	Number& operator()(int i, int j) {
-		if (i >= this->n || j >= this->m) {
+		if (i >= this->n || j >= this->m || i < 0 || j < 0) {
 			cout << "list of matrix is out of range\n";
 			throw;
 		}
@@ -65,11 +70,18 @@ public:
 	}
 
 	const Number& operator()(int i, int j) const {
-		if (i >= this->n || j >= this->m) {
+		if (i >= this->n || j >= this->m  || i<0 || j<0) {
 			cout << "Seg Fault\n";
 			throw;
 		}
 		return this->v[i][j];
+	}
+	vector<Number>& operator[](int i) {
+		if (i >= this->n || i < 0) {
+			cout << "list of matrix is out of range\n";
+			throw;
+		}
+		return this->v[i];
 	}
 	//Multiply by number
 	Matrix operator*(Number x) {
