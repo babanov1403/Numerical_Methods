@@ -3,7 +3,7 @@
 #include <cmath>
 #include <string>
 #include <iostream>
-//my pow
+
 namespace biv {
 
 double my_pow(double x, int k) {

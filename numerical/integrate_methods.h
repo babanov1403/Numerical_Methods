@@ -32,15 +32,13 @@ double computeIntegral(Matrix<Number> Mu, const vector<double>& nodes);
 template <typename Number> 
 Matrix<Number> RhimannIntegrale(double, double, int, Matrix<Number>(*MatrixFunc)(double ksi));
 
-vector<double> makeNodes(int n, short int type = 0, double a = var_b::a, double b = var_b::b) {
-	if (type == 0) {//RAVNOMERNO
-		vector<double> nodes(n);
-		double h = (b - a) / n;
-		nodes[0] = a;
-		for (int i = 1; i < n; i++)
-			nodes[i] = nodes[i - 1] + h;
-		return nodes;
-	}
+vector<double> makeNodes(int n, double a = var_b::a, double b = var_b::b) {
+	vector<double> nodes(n);
+	double h = (b - a) / n;
+	nodes[0] = a;
+	for (int i = 1; i < n; i++)
+		nodes[i] = nodes[i - 1] + h;
+	return nodes;
 }
 
 template <typename Number>

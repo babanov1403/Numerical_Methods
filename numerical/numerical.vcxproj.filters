@@ -21,9 +21,6 @@
     <ClInclude Include="integrate_methods.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="functions.cpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="polynom_class.h">
       <Filter>Header Files</Filter>
     </ClInclude>

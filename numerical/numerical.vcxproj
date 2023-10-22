@@ -130,7 +130,6 @@
   <ItemGroup>
     <ClInclude Include="burger.h" />
     <ClInclude Include="burger_prot.h" />
-    <ClInclude Include="functions.cpp" />
     <ClInclude Include="integrate_methods.h" />
     <ClInclude Include="matrix_class.h" />
     <ClInclude Include="polynom_class.h" />
