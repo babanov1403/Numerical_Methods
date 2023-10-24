@@ -164,10 +164,13 @@ public:
 			return ans;
 		}
 		else {
+			int helper = floor(x);
+			x /= helper;
 			for (int i = 0; i < n; i++) {
 				tmp = v[i] * my_pow(x, i);
 				ans = ans + tmp;
 			}
+			ans = ans ^ helper;
 			return ans;
 		}
 	}

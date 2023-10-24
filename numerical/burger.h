@@ -20,7 +20,7 @@ vector<double> makeNodes_burger(int n, double a, double b) {
 
 //works 100% well
 template <typename Number>
-Polynom<Matrix<Number>> buildRowexp_A(const Matrix<Number>& A, int k = 15) {
+Polynom<Matrix<Number>> buildRowexp_A(const Matrix<Number>& A, int k = 25) {
 	if (A.n != A.m) {
 		std::cerr << "what do you think i will do with this matrix?\n";
 		throw;
@@ -39,19 +39,22 @@ Polynom<Matrix<Number>> buildRowexp_A(const Matrix<Number>& A, int k = 15) {
 	}
 	return res;
 }
-const static int nodes_count = 10;
+const int nodes_count = 10;
 Matrix<double> A = { {1, 0}, {0, -2} };
-static Polynom<Matrix<double>> expRowA = buildRowexp_A(A);
+Polynom<Matrix<double>> expRowA = buildRowexp_A(A);
 Matrix<double> B = Matrix<double>{ 1, 2 }.transpose();
 Matrix<double> x0 = Matrix<double>{ 1, 2 }.transpose();
 double t0 = 0, t1 = 10;
 Matrix<double> expA_t0 = expRowA.value(t0);
 Matrix<double> expA_t1 = expRowA.value(t1);
+
 Matrix<double> expA_t1_inv = expA_t1.inverse();
+Polynom<Matrix<double>> expA_inv = buildRowexp_A(A*(-1));
 size_t N = 2;
 Matrix<double> C = Matrix<double>{ 4, 1 }.transpose();
 Matrix<double> H = { {2, 1}, {3, 4} };
 Matrix<double> g = Matrix<double>{ -1, 1 }.transpose();
+
 }
 
 namespace biv {
@@ -79,16 +82,11 @@ Matrix<Number> makeISF_CD(const vector<Number>& nodes) {
 	double a = nodes[0], b = nodes.back();
 	for (int i = 0; i < nodes.size(); i++)
 		Mu(i, 0) = computeMoment_burger(i, a, b);
-	cout << "MOMENTI:\n";
-	cout << a << " " << b << '\n';
-	cout << Mu;
 	Matrix<Number> A(nodes.size(), nodes.size());
 	for (int i = 0; i < nodes.size(); i++)
 		for (int j = 0; j < nodes.size(); j++)
 			A(i, j) = my_pow(nodes[j], i); 
-	cout << A;
 	Matrix<Number> Outp = GaussSlau(A, Mu);
-	cout << Outp;
 	return Outp;
 }
 
@@ -168,7 +166,6 @@ template <typename Number>
 Matrix<Number> func_Dh(
 	double a
 	, const Matrix<Number>& B
-	, const Matrix<Number>& A
 	, const Matrix<Number>& H) {
 	Matrix<Number> res = compute_G(H, a) * B;
 	return res;
@@ -179,8 +176,8 @@ Number func_Ch(
 	double a
 	, const Matrix<Number>& B) {
 	Matrix<Number> res = C.transpose();
-	res = res * expRowA.value(a);
-	res = res * expA_t1_inv;
+	res = res * expA_t1;
+	res = res * expA_inv.value(a);
 	res = res * B;
 	return res[0][0];
 }
@@ -190,16 +187,12 @@ double computeCh(
 	, double b
 	, const Matrix<Number>& B) {
 	vector<double> nd = makeNodes_burger(nodes_count, a, b);
-	cout << a << "<>" << b << '\n';
-	cout << "NODES:\n";
-	for (auto i : nd) cout << i << " ";
-	cout << '\n';
 	Matrix<Number> Aj = makeISF_CD(nd);
 	int n = Aj.n;
 	double integrale= 0;
 	vector<double> sl(n);
 	for (int i = 0; i < n; i++)
-		sl[i] = Aj(i, 0) * func_Ch(nd[i], B);//mb zdes oshibka?????
+		sl[i] = Aj(i, 0) * func_Ch(nd[i], B);
 	sort(sl.begin(), sl.end());
 	for (auto i : sl) integrale += i;
 	return integrale;
@@ -214,9 +207,9 @@ Matrix<double> computeDh(double a
 	vector<double> nd = makeNodes_burger(nodes_count, a, b);
 	Matrix<Number> Aj = makeISF_CD(nd);
 	int n = Aj.n;
-	Matrix<Number> integrale = func_Dh(nd[0], B, A, H) * Aj[0][0];
+	Matrix<Number> integrale = func_Dh(nd[0], B, H) * Aj[0][0];
 	for (int i = 1; i < n; i++) 
-		integrale += func_Dh(nd[i], B, A, H) * Aj[i][0];// Mx1
+		integrale += func_Dh(nd[i], B, H) * Aj[i][0];// Mx1
 	return integrale;
 }
 
