@@ -39,17 +39,17 @@ Polynom<Matrix<Number>> buildRowexp_A(const Matrix<Number>& A, int k = 25) {
 	}
 	return res;
 }
-const int nodes_count = 10;
+const int nodes_count = 25;
 Matrix<double> A = { {1, 0}, {0, -2} };
 Polynom<Matrix<double>> expRowA = buildRowexp_A(A);
+Polynom<Matrix<double>> expA_inv = buildRowexp_A(A * (-1));
 Matrix<double> B = Matrix<double>{ 1, 2 }.transpose();
 Matrix<double> x0 = Matrix<double>{ 1, 2 }.transpose();
 double t0 = 0, t1 = 10;
 Matrix<double> expA_t0 = expRowA.value(t0);
 Matrix<double> expA_t1 = expRowA.value(t1);
-
-Matrix<double> expA_t1_inv = expA_t1.inverse();
-Polynom<Matrix<double>> expA_inv = buildRowexp_A(A*(-1));
+Matrix<double> expA_t1_inv = expA_inv.value(t1);
+Matrix<double> expA_t0_inv = expA_inv.value(t0);
 size_t N = 2;
 Matrix<double> C = Matrix<double>{ 4, 1 }.transpose();
 Matrix<double> H = { {2, 1}, {3, 4} };
@@ -93,9 +93,9 @@ Matrix<Number> makeISF_CD(const vector<Number>& nodes) {
 
 
 template <typename Number>
-Matrix<Number> compute_x0(const Matrix<Number>& A, Matrix<Number>& x0, double t, double t0) {
+Matrix<Number> compute_x0(const Matrix<Number>& x0, double t) {
 	Matrix<Number> x = expRowA.value(t);
-	x = x*expA_t0.inverse(); 
+	x = x*expA_t0_inv; 
 	x = x * x0;
 	return x;
 }
@@ -103,7 +103,7 @@ template <typename Number>
 Matrix<Number> compute_g0(const Matrix<Number>& g, const Matrix<Number>& H, const Matrix<Number>& x0) {
 	Matrix<Number> g0 = g;
 	Matrix<Number> helper = H;
-	helper = helper*x0;
+	helper = helper*compute_x0(x0, t1);
 	g0 = g0 + helper * (-1);
 	return g0;
 }

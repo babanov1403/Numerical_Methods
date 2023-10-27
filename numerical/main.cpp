@@ -1,11 +1,14 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <cmath>
+
 #include "integrate_methods.h"
 #include "matrix_class.h"
-#include <cmath>
 #include "burger.h"
 #include "polynom_class.h"
+
+
 
 using namespace biv;
 using namespace std;
@@ -16,8 +19,11 @@ int main() {
 	Matrix<double> D_res = buildD(t0, t1, N, A, B, H, g, x0);
 	cout << "D:\n";
 	cout << D_res;
-}
+	cout << "g0:\n";
+	cout << compute_g0(g, H, x0);
 
+
+}
 //Matrix<double> D_res = buildD(t0, t1, N, A, B, H, g, x0);
 	//cout << "D:\n";
 	//cout << D_res;
