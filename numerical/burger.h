@@ -40,20 +40,20 @@ Polynom<Matrix<Number>> buildRowexp_A(const Matrix<Number>& A, int k = 25) {
 	return res;
 }
 const int nodes_count = 25;
-Matrix<double> A = { {1, 0}, {0, -2} };
+Matrix<double> A = { {-1, 0}, {0, 3} };
 Polynom<Matrix<double>> expRowA = buildRowexp_A(A);
 Polynom<Matrix<double>> expA_inv = buildRowexp_A(A * (-1));
-Matrix<double> B = Matrix<double>{ 1, 2 }.transpose();
-Matrix<double> x0 = Matrix<double>{ 1, 2 }.transpose();
-double t0 = 0, t1 = 10;
+Matrix<double> B = Matrix<double>{ 1, 1 }.transpose();
+Matrix<double> x0 = Matrix<double>{ 2, 2 }.transpose();
+double t0 = 0, t1 = 2;
 Matrix<double> expA_t0 = expRowA.value(t0);
 Matrix<double> expA_t1 = expRowA.value(t1);
 Matrix<double> expA_t1_inv = expA_inv.value(t1);
 Matrix<double> expA_t0_inv = expA_inv.value(t0);
 size_t N = 2;
-Matrix<double> C = Matrix<double>{ 4, 1 }.transpose();
-Matrix<double> H = { {2, 1}, {3, 4} };
-Matrix<double> g = Matrix<double>{ -1, 1 }.transpose();
+Matrix<double> C = Matrix<double>{ 2, 3 }.transpose();
+Matrix<double> H = {1, 3};
+Matrix<double> g = Matrix<double>{ -1}.transpose();
 
 }
 
@@ -212,7 +212,45 @@ Matrix<double> computeDh(double a
 		integrale += func_Dh(nd[i], B, H) * Aj[i][0];// Mx1
 	return integrale;
 }
+//x(Tk+1) = Y(Tk+1)*Y^-1(Xk)*x0 + Y(Tk+1) * integrale(xk -> xk+1, Y^-1(t)*b dt)
 
+template <typename Number>
+Matrix<Number> func_Cauchy(
+	double a
+	, const Matrix<Number>& B
+	, double u) {
+	Matrix<Number> res = expA_inv.value(a);
+	res = res * B;
+	res = res * u;
+	return res;
+}
+
+template <typename Number>
+Matrix<Number> ComputeIntegraleCauchy(double a
+	, double b
+	, const Matrix<Number>& B
+	, double u) {
+	vector<double> nd = makeNodes_burger(nodes_count, a, b);
+	Matrix<Number> Aj = makeISF_CD(nd);
+	int n = Aj.n;
+	Matrix<Number> integrale = func_Cauchy(nd[0], B, u) * Aj[0][0];
+	for (int i = 1; i < n; i++)
+		integrale += func_Cauchy(nd[i], B, u) * Aj[i][0];
+	return integrale;
+}
+template <typename Number>
+Matrix<Number> computePathWGivenU(const vector<Number>& u) {
+	double h = (t1 - t0)*1.0 / N;
+	Matrix<Number> curr = x0;
+	int k = 0;
+	for (double i = h; i <= t1; i += h, k++) {
+		curr = expRowA.value(i) * (expA_inv.value(i - h) * curr + ComputeIntegraleCauchy(i - h, i, B, u[k]));
+		cout << "Current:\n";
+		cout << curr;
+	}
+		
+	return curr;
+}
 /*
 template <typename Number>
 Matrix<Number> computeDh(

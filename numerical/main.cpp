@@ -58,8 +58,8 @@ int main() {
 	cout << '\n';
 
 	for (int i = 0; i < N; i++) {
-		LBoundaries_u(i) = -1;
-		UBoundaries_u(i) = 1;
+		LBoundaries_u(i) = -10;
+		UBoundaries_u(i) = 10;
 	} 
 
 	for (int i = 0; i < N; i++) {
@@ -67,12 +67,12 @@ int main() {
 		cout << UBoundaries_u(i)  << ' ';
 		cout << '\n';
 	}
-
+	
 	for (int i = 0; i < H.n; i++) {
 		LBoundaries_D(i) = RawG0(i, 0);
-		UBoundaries_D(i) = RawG0(i, 0);
+		UBoundaries_D(i) = LBoundaries_D(i);
 	}
-	for (int i = 0; i < N; i++) {
+	for (int i = 0; i < H.n; i++) {
 		cout << LBoundaries_D(i) << ' ';
 		cout << UBoundaries_D(i) << ' ';
 		cout << '\n';
@@ -89,12 +89,24 @@ int main() {
 	//solving
 	alglib::minlpoptimize(state);
 	alglib::minlpresults(state, x, rep);
+	cout << "State:\n";
 	cout << rep.terminationtype << '\n';
 	cout << "x:\n";
 	for (int i = 0; i < N; i++) cout << x(i) << ' ';
-	cout << "Target:\n";
+	cout << "\nTarget:\n";
 	double ans = 0;
 	for (int i = 0; i < N; i++) 
 		ans += Target(i) * x(i);
-	cout << ans << '\n';
+	cout << -ans << '\n';
+
+	vector<double> U(N);
+	for (int i = 0; i < N; i++) U[i] = x(i);
+	cout << "Computing:\n";
+	Matrix<double> FinalPos = computePathWGivenU(U);
+	cout << "FinalPos:\n";
+	cout << FinalPos;
+	Matrix<double> DoesIt = H * FinalPos;
+	cout << "Nevyazka:\n";
+	cout << DoesIt << g;
+
 }
