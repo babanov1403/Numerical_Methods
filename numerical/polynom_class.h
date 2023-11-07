@@ -74,7 +74,7 @@ public:
 		return {};
 	}
 
-	Number value(double x) {
+	Number value(double x) {//O(nlogn) => i can do this by O(n)
 
 		Number ans = 0;
 		if (abs(x) <= 1) {

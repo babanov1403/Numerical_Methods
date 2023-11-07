@@ -147,7 +147,7 @@
     <ClInclude Include="alglibmisc.h" />
     <ClInclude Include="ap.h" />
     <ClInclude Include="burger.h" />
-    <ClInclude Include="burger_prot.h" />
+    <ClInclude Include="functions.h" />
     <ClInclude Include="integrate_methods.h" />
     <ClInclude Include="linalg.h" />
     <ClInclude Include="matrix_class.h" />

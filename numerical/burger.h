@@ -1,8 +1,10 @@
 #pragma once
+
+#include <iostream>
+#include <fstream>
+
 #include "polynom_class.h"
 #include "matrix_class.h"
-#include <iostream>
-#include "burger_prot.h"
 #include "integrate_methods.h"
 using namespace std;
 
@@ -17,7 +19,6 @@ vector<double> makeNodes_burger(int n, double a, double b) {
 	return nodes;
 }
 
-
 //works 100% well
 template <typename Number>
 Polynom<Matrix<Number>> buildRowexp_A(const Matrix<Number>& A, int k = 25) {
@@ -31,14 +32,15 @@ Polynom<Matrix<Number>> buildRowexp_A(const Matrix<Number>& A, int k = 25) {
 	}
 	Polynom<Matrix<Number>> res(k);
 	double curr = 1;
-	res[0] = XD*curr;
+	res[0] = XD * curr;
 	for (int i = 1; i < k; i++) {
 		curr *= 1.0 / i;
-		XD = XD*A;
+		XD = XD * A;
 		res[i] = XD * curr;
 	}
 	return res;
 }
+
 const int nodes_count = 25;
 Matrix<double> A = { {-1, 0}, {0, 3} };
 Polynom<Matrix<double>> expRowA = buildRowexp_A(A);
@@ -52,8 +54,8 @@ Matrix<double> expA_t1_inv = expA_inv.value(t1);
 Matrix<double> expA_t0_inv = expA_inv.value(t0);
 size_t N = 2;
 Matrix<double> C = Matrix<double>{ 2, 3 }.transpose();
-Matrix<double> H = {1, 3};
-Matrix<double> g = Matrix<double>{ -1}.transpose();
+Matrix<double> H = { 1, 3 };
+Matrix<double> g = Matrix<double>{ -1 }.transpose();
 
 }
 
@@ -238,15 +240,44 @@ Matrix<Number> ComputeIntegraleCauchy(double a
 		integrale += func_Cauchy(nd[i], B, u) * Aj[i][0];
 	return integrale;
 }
+
+
 template <typename Number>
-Matrix<Number> computePathWGivenU(const vector<Number>& u) {
+Matrix<Number> computePathWGivenU(const vector<Number>& u, bool isForRecord = false) {
 	double h = (t1 - t0)*1.0 / N;
 	Matrix<Number> curr = x0;
 	int k = 0;
-	for (double i = h; i <= t1; i += h, k++) {
-		curr = expRowA.value(i) * (expA_inv.value(i - h) * curr + ComputeIntegraleCauchy(i - h, i, B, u[k]));
-		cout << "Current:\n";
-		cout << curr;
+	if (isForRecord) {
+		int dim = curr.n;
+		ofstream fout("data.txt");
+		bool flag = true;
+		fout << "{";
+		for (double i = h; i <= t1; i += h, k++) {
+			for (double shit = i-h; shit <= i; shit += h/1e4) {
+				Matrix<Number> XD = expRowA.value(shit) * (expA_inv.value(i - h) * curr + ComputeIntegraleCauchy(i - h, shit, B, u[k]));
+				fout << "'" << shit << "':[";
+				for (int ii = 0; ii < dim; ii++) {
+					if (flag) {
+						fout << x0(ii,0);
+					} else fout << XD(ii, 0);
+					if (ii != dim - 1) fout << ',';
+					
+				}
+				fout << "],";
+				flag = false;
+			}
+			curr = expRowA.value(i) * (expA_inv.value(i - h) * curr + ComputeIntegraleCauchy(i - h, i, B, u[k]));
+		}
+		for (double shit = t1-h; shit <= t1; shit += h / 1e3) {
+			Matrix<Number> XD = expRowA.value(shit) * (expA_inv.value(t1 - h) * curr + ComputeIntegraleCauchy(t1 - h, shit, B, u[k]));
+			for (int ii = 0; ii < dim; ii++) fout << XD(ii, 0) << ' ';
+		}
+		fout << "}";
+		fout.close();
+	}
+	else {
+		for (double i = h; i <= t1; i += h, k++) 
+			curr = expRowA.value(i) * (expA_inv.value(i - h) * curr + ComputeIntegraleCauchy(i - h, i, B, u[k]));
 	}
 		
 	return curr;
