@@ -56,7 +56,7 @@ size_t N = 2;
 Matrix<double> C = Matrix<double>{ 2, 3 }.transpose();
 Matrix<double> H = { 1, 3 };
 Matrix<double> g = Matrix<double>{ -1 }.transpose();
-
+//x + 3y = -1 => y = -1/3-x/3
 }
 
 namespace biv {
@@ -253,7 +253,7 @@ Matrix<Number> computePathWGivenU(const vector<Number>& u, bool isForRecord = fa
 		bool flag = true;
 		fout << "{";
 		for (double i = h; i <= t1; i += h, k++) {
-			for (double shit = i-h; shit <= i; shit += h/1e4) {
+			for (double shit = i-h+h/1e2; shit <= i; shit += h/1e2) {
 				Matrix<Number> XD = expRowA.value(shit) * (expA_inv.value(i - h) * curr + ComputeIntegraleCauchy(i - h, shit, B, u[k]));
 				fout << "'" << shit << "':[";
 				for (int ii = 0; ii < dim; ii++) {
@@ -267,10 +267,6 @@ Matrix<Number> computePathWGivenU(const vector<Number>& u, bool isForRecord = fa
 				flag = false;
 			}
 			curr = expRowA.value(i) * (expA_inv.value(i - h) * curr + ComputeIntegraleCauchy(i - h, i, B, u[k]));
-		}
-		for (double shit = t1-h; shit <= t1; shit += h / 1e3) {
-			Matrix<Number> XD = expRowA.value(shit) * (expA_inv.value(t1 - h) * curr + ComputeIntegraleCauchy(t1 - h, shit, B, u[k]));
-			for (int ii = 0; ii < dim; ii++) fout << XD(ii, 0) << ' ';
 		}
 		fout << "}";
 		fout.close();
