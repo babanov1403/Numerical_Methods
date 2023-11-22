@@ -253,7 +253,7 @@ Matrix<Number> computePathWGivenU(const vector<Number>& u, bool isForRecord = fa
 		bool flag = true;
 		fout << "{";
 		for (double i = h; i <= t1; i += h, k++) {
-			for (double shit = i-h+h/1e2; shit <= i; shit += h/1e2) {
+			for (double shit = i-h+h/1e4; shit <= i; shit += h/1e4) {
 				Matrix<Number> XD = expRowA.value(shit) * (expA_inv.value(i - h) * curr + ComputeIntegraleCauchy(i - h, shit, B, u[k]));
 				fout << "'" << shit << "':[";
 				for (int ii = 0; ii < dim; ii++) {
