@@ -18,7 +18,9 @@
 using namespace biv;
 using namespace std;
 int main() {
-	Matrix<double> RawC = buildC(t0, t1, N, A, B, H, g, x0);
+	vector<double> tmp(N, 25/N);
+
+	Matrix<double> RawC(tmp);
 	Matrix<double> RawD = buildD(t0, t1, N, A, B, H, g, x0);
 	Matrix<double> RawG0 = compute_g0(g, H, x0);
 
@@ -37,10 +39,10 @@ int main() {
 	double ans = 0;
 	for (int i = 0; i < N; i++) 
 		ans += RawC(0, i) * x(i);
-	cout << -ans << '\n';
+	cout << ans << '\n';
 
 	cout << "Computing:\n";
-	Matrix<double> FinalPos = computePathWGivenU(U, true);
+	Matrix<double> FinalPos = computePathWGivenU(U, false);
 	cout << "FinalPos:\n";
 	cout << FinalPos;
 

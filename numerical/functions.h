@@ -25,11 +25,11 @@ namespace biv {
 				D1(i, j) = D(i, j);
 
 		for (int i = 0; i < N; i++)
-			Target(i) = -C(0, i);
+			Target(i) = C(0, i);
 
 		for (int i = 0; i < N; i++) {
-			LBoundaries_u(i) = -10;
-			UBoundaries_u(i) = 10;
+			LBoundaries_u(i) = -1;
+			UBoundaries_u(i) = 1;
 		}
 
 		for (int i = 0; i < H.n; i++) {

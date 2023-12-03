@@ -41,22 +41,22 @@ Polynom<Matrix<Number>> buildRowexp_A(const Matrix<Number>& A, int k = 25) {
 	return res;
 }
 
-const int nodes_count = 25;
-Matrix<double> A = { {-1, 0}, {0, 3} };
-Polynom<Matrix<double>> expRowA = buildRowexp_A(A);
-Polynom<Matrix<double>> expA_inv = buildRowexp_A(A * (-1));
-Matrix<double> B = Matrix<double>{ 1, 1 }.transpose();
-Matrix<double> x0 = Matrix<double>{ 2, 2 }.transpose();
-double t0 = 0, t1 = 2;
-Matrix<double> expA_t0 = expRowA.value(t0);
-Matrix<double> expA_t1 = expRowA.value(t1);
-Matrix<double> expA_t1_inv = expA_inv.value(t1);
-Matrix<double> expA_t0_inv = expA_inv.value(t0);
-size_t N = 2;
-Matrix<double> C = Matrix<double>{ 2, 3 }.transpose();
-Matrix<double> H = { 1, 3 };
-Matrix<double> g = Matrix<double>{ -1 }.transpose();
-//x + 3y = -1 => y = -1/3-x/3
+	const int nodes_count = 25;
+	Matrix<double> A = { {0, 0, 1, 0}, {0, 0, 0, 1}, {-1, 1, 0, 0}, {0.1, -1.02, 0, 0} };
+	Polynom<Matrix<double>> expRowA = buildRowexp_A(A);
+	Polynom<Matrix<double>> expA_inv = buildRowexp_A(A * (-1));
+	Matrix<double> B = Matrix<double>{ 0, 0, 1, 0 }.transpose();
+	Matrix<double> x0 = Matrix<double>{ 0, 0, 2, 1 }.transpose();
+	double t0 = 0, t1 = 25;
+	Matrix<double> expA_t0 = expRowA.value(t0);
+	Matrix<double> expA_t1 = expRowA.value(t1);
+	Matrix<double> expA_t1_inv = expA_inv.value(t1);
+	Matrix<double> expA_t0_inv = expA_inv.value(t0);
+	size_t N = 10;
+	Matrix<double> C = Matrix<double>{ 2, 3 }.transpose();
+	Matrix<double> H = { {1, 0, 0, 0},{0,1,0,0},{0,0,1,0},{0,0,0,1} };
+	Matrix<double> g = Matrix<double>{ 0, 0, 0, 0 }.transpose();
+	//x + 3y = -1 => y = -1/3-x/3
 }
 
 namespace biv {
